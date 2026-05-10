@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>门窗配单系统</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>📐 门窗配单系统</h1>
+    <p class="subtitle">快速配单 · 智能计算 · 一键询价</p >
+  </header>
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="home">🏠 首页</button>
+    <button class="tab-btn" data-tab="config">📋 帮我配单</button>
+    <button class="tab-btn" data-tab="quote">📸 来图报价</button>
+    <button class="tab-btn" data-tab="customer">👤 客户信息</button>
+    <button class="tab-btn" data-tab="template">🖼️ 窗型模板</button>
+    <button class="tab-btn" data-tab="contact">📞 联系方式</button>
+    <button class="tab-btn" data-tab="video">🎬 宣传视频</button>
+    <button class="tab-btn" data-tab="inventory">📦 库存管理</button>
+  </nav>
+
+  <!-- 首页 -->
+  <div id="home" class="tab-content active">
+    <div class="welcome">
+      <h2>欢迎使用门窗配单系统</h2>
+      <div class="feature-cards">
+        <div class="card" onclick="switchTab('config')">
+          <div class="card-icon">📋</div>
+          <h3>帮我配单</h3>
+          <p>选择门窗类型、输入尺寸，自动计算材料用量</p >
+        </div>
+        <div class="card" onclick="switchTab('quote')">
+          <div class="card-icon">📸</div>
+          <h3>来图报价</h3>
+          <p>上传图纸或现场照片，快速获取报价</p >
+        </div>
+        <div class="card" onclick="switchTab('template')">
+          <div class="card-icon">🖼️</div>
+          <h3>窗型模板</h3>
+          <p>查看经典窗型样式，老板实时更新</p >
+        </div>
+        <div class="card" onclick="switchTab('inventory')">
+          <div class="card-icon">📦</div>
+          <h3>库存管理</h3>
+          <p>进货出货记录，库存一目了然</p >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 帮我配单 -->
+  <div id="config" class="tab-content">
+    <div class="config-form">
+      <h2>📋 配单配置</h2>
+      <div class="form-group">
+        <label>选择类型</label>
+        <div class="btn-group">
+          <button class="select-btn" data-value="窗">窗</button>
+          <button class="select-btn" data-value="门">门</button>
+        </div>
+        <input type="hidden" id="type" value="">
+      </div>
+      <div class="form-group">
+        <label>宽度 (mm)</label>
+        <input type="number" id="width" placeholder="请输入宽度" min="100" max="10000">
+      </div>
+      <div class="form-group">
+        <label>高度 (mm)</label>
+        <input type="number" id="height" placeholder="请输入高度" min="100" max="10000">
+      </div>
+      <div class="form-group">
+        <label>开启方式</label>
+        <div class="btn-group">
+          <button class="select-btn" data-value="平开">平开</button>
+          <button class="select-btn" data-value="推拉">推拉</button>
+        </div>
+        <input type="hidden" id="openType" value="">
+      </div>
+      <button class="calc-btn" onclick="calculate()">🔢 计算材料 + 五金</button>
+      <div id="result" class="result-section" style="display:none;">
+        <h3>📊 计算结果</h3>
+        <div class="result-grid">
+          <div class="result-item"><span class="label">框料</span><span class="value" id="frameResult">0</span><span class="unit">米</span></div>
+          <div class="result-item"><span class="label">扇料</span><span class="value" id="sashResult">0</span><span class="unit">米</span></div>
+          <div class="result-item"><span class="label">压线</span><span class="value" id="glassResult">0</span><span class="unit">米</span></div>
+          <div class="result-item"><span class="label">玻璃面积</span><span class="value" id="areaResult">0</span><span class="unit">㎡</span></div>
+          <div class="result-item"><span class="label">中梃(竖)</span><span class="value" id="mullionResult">0</span><span class="unit">米</span></div>
+          <div class="result-item"><span class="label">横梁(横)</span><span class="value" id="crossResult">0</span><span class="unit">米</span></div>
+          <div class="result-item"><span class="label">总用料</span><span class="value" id="totalResult">0</span><span class="unit">米</span></div>
+          <div class="result-item"><span class="label">五金配件</span><span class="value" id="hardwareResult">-</span><span class="unit">套</span></div>
+        </div>
+        <button class="quote-btn" onclick="contactSales()" style="margin-top:10px;">💬 提交询价</button>
+        <button class="quote-btn" onclick="exportPDF()" style="margin-top:10px;background:#667eea;">📄 导出PDF</button>
+        <button class="quote-btn" onclick="printResult()" style="margin-top:10px;background:#ff9800;">🖨️ 打印单据</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 来图报价 -->
+  <div id="quote" class="tab-content">
+    <div class="quote-form">
+      <h2>📸 来图报价</h2>
+      <p class="hint">上传图纸或现场照片，快速获取报价</p >
+      <div class="form-group">
+        <label>联系电话</label>
+        <input type="tel" id="quotePhone" placeholder="请输入您的电话，方便联系">
+        <button onclick="callPhone()" style="margin-top:8px;width:100%;padding:10px;background:#4caf50;color:white;border:none;border-radius:8px;">📞 一键拨号联系</button>
+      </div>
+      <div class="upload-area" id="uploadArea">
+        <input type="file" id="fileInput" accept="image/*" multiple onchange="handleFiles(this.files)">
+        <div class="upload-placeholder">
+          <div class="upload-icon">📁</div>
+          <p>点击或拖拽上传图片</p >
+          <p class="hint">支持 JPG、PNG 格式</p >
+        </div>
+      </div>
+      <div id="previewArea" class="preview-area"></div>
+      <div class="form-group">
+        <label>备注信息</label>
+        <textarea id="remark" placeholder="请输入补充说明（选填）" rows="3"></textarea>
+      </div>
+      <button class="submit-btn" onclick="submitQuote()">📤 提交报价请求</button>
+    </div>
+  </div>
+
+  <!-- 客户信息 -->
+  <div id="customer" class="tab-content">
+    <div class="config-form">
+      <h2>👤 客户信息登记</h2>
+      <div class="form-group">
+        <label>客户姓名</label>
+        <input type="text" id="c_name" placeholder="请输入客户姓名">
+      </div>
+      <div class="form-group">
+        <label>联系电话</label>
+        <input type="text" id="c_tel" placeholder="请输入联系电话">
+      </div>
+      <div class="form-group">
+        <label>小区/地址</label>
+        <input type="text" id="c_addr" placeholder="小区名称、详细地址">
+      </div>
+      <div class="form-group">
+        <label>客服需求备注</label>
+        <textarea id="c_note" rows="3" placeholder="门窗需求、预算、特殊要求"></textarea>
+      </div>
+      <div class="form-group">
+        <label>上传户型图/现场照片（客户可选）</label>
+        <div class="upload-area" id="customerUploadArea">
+          <input type="file" id="customerFileInput" accept="image/*" multiple onchange="handleCustomerFiles(this.files)">
+          <div class="upload-placeholder">
+            <div class="upload-icon">🖼️</div>
+            <p>点击上传客户家照片</p >
+          </div>
+        </div>
+        <div id="customerPreviewArea" class="preview-area"></div>
+      </div>
+      <button class="calc-btn" onclick="saveCustomer()">💾 保存客户信息+图纸</button>
+      <button class="calc-btn" style="background:#4caf50;margin-top:10px;" onclick="sendToBoss()">📤 一键发给老板</button>
+      <div class="result-section" style="margin-top:20px;">
+        <h3>🗂️ 已保存客户</h3>
+        <div id="customerList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 窗型模板（已修复：无空格，正常显示） -->
+  <div id="template" class="tab-content">
+    <div class="config-form">
+      <h2>🖼️ 窗型样式模板（老板可更换）</h2>
+      <div style="text-align:center; margin-bottom:20px;">
+        <button class="calc-btn" style="background:#ec4899;" onclick="openTemplateUpload(1)">更换 断桥平开窗图</button>
+        <button class="calc-btn" style="background:#ec4899; margin-top:10px;" onclick="openTemplateUpload(2)">更换 经典推拉窗图</button>
+        <button class="calc-btn" style="background:#ec4899; margin-top:10px;" onclick="openTemplateUpload(3)">更换 全景落地窗图</button>
+        <button class="calc-btn" style="background:#ec4899; margin-top:10px;" onclick="openTemplateUpload(4)">更换 厨卫固定窗图</button>
+        <p style="color:#666; font-size:14px; margin-top:10px;">点击按钮 → 选择对应窗型图片 → 自动保存</p >
+        <input type="file" id="templateFileInput" style="display:none;" accept="image/*">
+      </div>
+      <div class="template-grid" id="templateGrid">
+        <div class="template-item">
+          <img id="tempImg1" src="https://picsum.photos/id/103/300/200" alt="断桥平开窗" style="width:100%;height:auto;border-radius:8px;object-fit:cover;">
+          <p>断桥平开窗</p >
+        </div>
+        <div class="template-item">
+          <img id="tempImg2" src="https://picsum.photos/id/104/300/200" alt="经典推拉窗" style="width:100%;height:auto;border-radius:8px;object-fit:cover;">
+          <p>经典推拉窗</p >
+        </div>
+        <div class="template-item">
+          <img id="tempImg3" src="https://picsum.photos/id/106/300/200" alt="全景落地窗" style="width:100%;height:auto;border-radius:8px;object-fit:cover;">
+          <p>全景落地窗</p >
+        </div>
+        <div class="template-item">
+          <img id="tempImg4" src="https://picsum.photos/id/122/300/200" alt="厨卫固定窗" style="width:100%;height:auto;border-radius:8px;object-fit:cover;">
+          <p>厨卫固定窗</p >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 联系方式（已修复：电话+抖音正常可用） -->
+  <div id="contact" class="tab-content">
+    <h2 style="padding:20px 0 10px;text-align:center;">📞 联系我们</h2>
+    <p style="text-align:center;color:#666;margin-bottom:20px;">欢迎咨询下单，24小时在线</p >
+    <div style="padding:0 20px 40px;">
+      <div style="background:#f8f9fa;border-radius:16px;padding:25px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+        <div style="font-size:20px;font-weight:bold;margin-bottom:15px;">🏠 蓝志坚 - 门窗配单</div>
+        <div style="font-size:18px;margin:12px 0;">📞 电话：13870587221</div>
+        <div style="margin-top:20px;">
+          <button onclick="copyContactPhone()" style="padding:12px 20px;background:#667eea;color:white;border:none;border-radius:10px;font-size:16px;margin-right:8px;">📋 复制电话</button>
+          <button onclick="window.open('https://v.douyin.com/u_aSuCw7_rc/','_blank')" style="padding:12px 20px;background:#fe2c55;color:white;border:none;border-radius:10px;font-size:16px;">🎵 打开抖音</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 宣传视频（已修复：可点击打开，支持多视频） -->
+  <div id="video" class="tab-content">
+    <h2 style="padding:20px 0 10px;text-align:center;">🎬 宣传视频</h2>
+    <div style="padding:0 20px 30px; text-align:center;">
+      <button onclick="window.open('https://v.douyin.com/KRhGyG18520/','_blank')" style="padding:15px 30px; background:#fe2c55; color:white; border:none; border-radius:12px; font-size:18px; cursor:pointer;">▶️ 点击播放宣传视频</button>
+    </div>
+  </div>
+
+  <!-- 库存管理 -->
+  <div id="inventory" class="tab-content">
+    <h2 style="padding:20px 0 10px;text-align:center;">📦 库存管理</h2>
+    <div style="padding:0 20px;">
+      <div class="form-group">
+        <label>材料名称</label>
+        <input type="text" id="materialName" placeholder="例如：框料、扇料、玻璃" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;">
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:15px;">
+        <div style="flex:1;">
+          <label>数量</label>
+          <input type="number" id="materialQty" placeholder="数量" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;">
+        </div>
+        <div style="flex:1;">
+          <label>类型</label>
+          <select id="stockType" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;">
+            <option value="in">📥 进货</option>
+            <option value="out">📤 出货</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="addStockRecord()" style="width:100%;padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:8px;font-size:16px;cursor:pointer;margin-bottom:20px;">记录入库</button>
+    </div>
+    <div style="padding:0 20px 30px;">
+      <h3 style="margin-bottom:15px;">📊 库存一览表</h3>
+      <div style="overflow-x:auto;">
+        <table id="inventoryTable" style="width:100%;border-collapse:collapse;background:white;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+          <thead>
+            <tr style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;">
+              <th style="padding:12px;text-align:left;">材料名称</th>
+              <th style="padding:12px;text-align:center;">📥 进货</th>
+              <th style="padding:12px;text-align:center;">📤 出货</th>
+              <th style="padding:12px;text-align:center;">📦 现存</th>
+              <th style="padding:12px;text-align:center;">操作</th>
+            </tr>
+          </thead>
+          <tbody id="inventoryBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
