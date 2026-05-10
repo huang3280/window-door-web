@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>门窗配单系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📐 门窗配单系统</h1>
+            <p class="subtitle">快速配单 · 智能计算 · 一键询价</p>
+        </header>
+
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="home">🏠 首页</button>
+            <button class="tab-btn" data-tab="config">📋 帮我配单</button>
+            <button class="tab-btn" data-tab="quote">📸 来图报价</button>
+        </nav>
+
+        <!-- 首页 -->
+        <div id="home" class="tab-content active">
+            <div class="welcome">
+                <h2>欢迎使用门窗配单系统</h2>
+                <div class="feature-cards">
+                    <div class="card" onclick="switchTab('config')">
+                        <div class="card-icon">📋</div>
+                        <h3>帮我配单</h3>
+                        <p>选择门窗类型、输入尺寸，自动计算材料用量</p>
+                    </div>
+                    <div class="card" onclick="switchTab('quote')">
+                        <div class="card-icon">📸</div>
+                        <h3>来图报价</h3>
+                        <p>上传图纸或料头照片，快速获取报价</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 帮我配单 -->
+        <div id="config" class="tab-content">
+            <div class="config-form">
+                <h2>📋 配单配置</h2>
+                
+                <div class="form-group">
+                    <label>选择类型</label>
+                    <div class="btn-group">
+                        <button class="select-btn" data-value="窗">窗</button>
+                        <button class="select-btn" data-value="门">门</button>
+                    </div>
+                    <input type="hidden" id="type" value="">
+                </div>
+
+                <div class="form-group">
+                    <label>宽度 (mm)</label>
+                    <input type="number" id="width" placeholder="请输入宽度" min="100" max="10000">
+                </div>
+
+                <div class="form-group">
+                    <label>高度 (mm)</label>
+                    <input type="number" id="height" placeholder="请输入高度" min="100" max="10000">
+                </div>
+
+                <div class="form-group">
+                    <label>开启方式</label>
+                    <div class="btn-group">
+                        <button class="select-btn" data-value="平开">平开</button>
+                        <button class="select-btn" data-value="推拉">推拉</button>
+                    </div>
+                    <input type="hidden" id="openType" value="">
+                </div>
+
+                <button class="calc-btn" onclick="calculate()">🔢 计算材料</button>
+
+                <div id="result" class="result-section" style="display:none;">
+                    <h3>📊 计算结果</h3>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="label">框料</span>
+                            <span class="value" id="frameResult">0</span>
+                            <span class="unit">米</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">扇料</span>
+                            <span class="value" id="sashResult">0</span>
+                            <span class="unit">米</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">压线</span>
+                            <span class="value" id="glassResult">0</span>
+                            <span class="unit">米</span>
+                        </div>
+                    </div>
+                    <button class="quote-btn" onclick="contactSales()">💬 提交询价</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 来图报价 -->
+        <div id="quote" class="tab-content">
+            <div class="quote-form">
+                <h2>📸 来图报价</h2>
+                <p class="hint">上传图纸或料头照片，销售人员会尽快联系您</p>
+                
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="fileInput" accept="image/*" multiple onchange="handleFiles(this.files)">
+                    <div class="upload-placeholder">
+                        <div class="upload-icon">📁</div>
+                        <p>点击或拖拽上传图片</p>
+                        <p class="hint">支持 JPG、PNG 格式</p>
+                    </div>
+                </div>
+
+                <div id="previewArea" class="preview-area"></div>
+
+                <div class="form-group">
+                    <label>备注信息</label>
+                    <textarea id="remark" placeholder="请输入补充说明（选填）" rows="3"></textarea>
+                </div>
+
+                <button class="submit-btn" onclick="submitQuote()">📤 提交报价请求</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
